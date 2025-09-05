@@ -36,15 +36,6 @@ module "basic" {
   # Required variables (adjust values accordingly)
   name                = "DataFactory-${module.naming.data_factory.name_unique}"
   resource_group_name = azurerm_resource_group.rg.name
-
-  linked_service_cosmosdb_mongoapi = {
-    cosmosdb_ls_1 = {
-      name              = "ls-cosmosdb-mongoapi-test"
-      connection_string = "mongodb://acc:pass@foobar.documents.azure.com:10255"
-      database          = "mydbname"
-    }
-  }
-
   dataset_cosmosdb_mongoapi = {
     dataset_1 = {
       name                = "ds-cosmosdb-mongoapi-test"
@@ -56,6 +47,13 @@ module "basic" {
       parameters = {
         "param1" = "value1"
       }
+    }
+  }
+  linked_service_cosmosdb_mongoapi = {
+    cosmosdb_ls_1 = {
+      name              = "ls-cosmosdb-mongoapi-test"
+      connection_string = "mongodb://acc:pass@foobar.documents.azure.com:10255"
+      database          = "mydbname"
     }
   }
 }

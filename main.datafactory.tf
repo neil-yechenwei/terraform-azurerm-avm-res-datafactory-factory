@@ -138,7 +138,6 @@ resource "azapi_resource" "cosmosdb_mongoapi_dataset" {
   name      = each.value.name
   parent_id = azurerm_data_factory.this.id
   type      = "Microsoft.DataFactory/factories/datasets@2018-06-01"
-
   body = {
     properties = {
       type = "CosmosDbMongoDbApiCollection"
@@ -162,7 +161,6 @@ resource "azapi_resource" "cosmosdb_mongoapi_dataset" {
       } : null
     }
   }
-
   create_headers = var.enable_telemetry ? { "User-Agent" : local.avm_azapi_header } : null
   delete_headers = var.enable_telemetry ? { "User-Agent" : local.avm_azapi_header } : null
   read_headers   = var.enable_telemetry ? { "User-Agent" : local.avm_azapi_header } : null

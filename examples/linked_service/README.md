@@ -28,9 +28,6 @@ provider "azurerm" {
 module "naming" {
   source  = "Azure/naming/azurerm"
   version = "0.3.0"
-
-  prefix = ["test"]
-  suffix = ["03"]
 }
 
 # Create Resource Group with dynamically generated name
@@ -39,12 +36,20 @@ resource "azurerm_resource_group" "rg" {
   name     = module.naming.resource_group.name
 }
 
+resource "random_string" "name_suffix" {
+  length  = 5
+  lower   = true
+  numeric = true
+  special = false
+  upper   = false
+}
+
 # Create a Storage Account with dynamically generated name
 resource "azurerm_storage_account" "storage" {
   account_replication_type = "ZRS"
   account_tier             = "Standard"
   location                 = azurerm_resource_group.rg.location
-  name                     = module.naming.storage_account.name
+  name                     = "test${random_string.name_suffix.result}"
   resource_group_name      = azurerm_resource_group.rg.name
 }
 
@@ -60,7 +65,7 @@ module "df_with_linked_service" {
 
   location = azurerm_resource_group.rg.location
   # Required variables (adjust values accordingly)
-  name                = module.naming.data_factory.name
+  name                = "DataFactory-${module.naming.data_factory.name_unique}"
   resource_group_name = azurerm_resource_group.rg.name
   linked_service_azure_file_storage = {
     example = {
@@ -88,6 +93,7 @@ The following resources are used by this module:
 - [azurerm_resource_group.rg](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/resource_group) (resource)
 - [azurerm_storage_account.storage](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/storage_account) (resource)
 - [azurerm_storage_share.fileshare](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/storage_share) (resource)
+- [random_string.name_suffix](https://registry.terraform.io/providers/hashicorp/random/latest/docs/resources/string) (resource)
 
 <!-- markdownlint-disable MD013 -->
 ## Required Inputs
