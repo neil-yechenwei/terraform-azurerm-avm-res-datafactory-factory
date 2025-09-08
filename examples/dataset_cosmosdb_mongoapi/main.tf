@@ -38,7 +38,7 @@ module "basic" {
   resource_group_name = azurerm_resource_group.rg.name
   dataset_cosmosdb_mongoapi = {
     dataset_1 = {
-      name                = "ds-cosmosdb-mongoapi-test"
+      name                = "cosmosdbmongoapitest"
       linked_service_name = "ls-cosmosdb-mongoapi-test"
       collection_name     = "collection-1"
       annotations         = ["annotation1"]
