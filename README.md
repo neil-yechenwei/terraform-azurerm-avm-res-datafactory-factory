@@ -174,8 +174,8 @@ Each object in the map consists of the following properties:
 
 - `name` - (Required) The unique name of the Data Factory Dataset for CosmosDB MongoDB API.
 - `linked_service_name` - (Required) The name of the linked service that references the CosmosDB MongoDB API.
+- `collection_name` - (Required) The name of the collection in the CosmosDB MongoDB API.
 - `annotations` - (Optional) A list of tags that can be used for describing the Dataset.
-- `collection_name` - (Optional) The name of the collection in the CosmosDB MongoDB API.
 - `description` - (Optional) A description for the Dataset.
 - `folder` - (Optional) The folder name that this dataset is in. If not specified, dataset will appear at the root level.
 - `parameters` - (Optional) A map of parameters to associate with the dataset.
@@ -186,8 +186,8 @@ Type:
 map(object({
     name                = string
     linked_service_name = string
+    collection_name     = string
     annotations         = optional(list(string))
-    collection_name     = optional(string)
     description         = optional(string)
     folder              = optional(string)
     parameters          = optional(map(string))
