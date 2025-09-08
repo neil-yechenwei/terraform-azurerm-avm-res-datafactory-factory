@@ -111,6 +111,43 @@ Each object in the map consists of the following properties:
 
 DESCRIPTION
   nullable    = false
+
+  validation {
+    condition = alltrue([
+      for dataset in var.dataset_cosmosdb_mongoapi : !can(regex("[-.+?/<>*%&:\\\\]", dataset.name))
+    ])
+    error_message = "Dataset names cannot contain any of the following characters: '-', '.', '+', '?', '/', '<', '>', '*', '%', '&', ':', '\\'."
+  }
+
+  validation {
+    condition = alltrue([
+      for dataset in var.dataset_cosmosdb_mongoapi : length(trimspace(dataset.linked_service_name)) > 0
+    ])
+    error_message = "The linked_service_name cannot be empty or contain only whitespace characters."
+  }
+
+  validation {
+    condition = alltrue([
+      for dataset in var.dataset_cosmosdb_mongoapi : length(trimspace(dataset.collection_name)) > 0
+    ])
+    error_message = "The collection_name cannot be empty or contain only whitespace characters."
+  }
+
+  validation {
+    condition = alltrue([
+      for dataset in var.dataset_cosmosdb_mongoapi :
+      dataset.description == null || length(trimspace(dataset.description)) > 0
+    ])
+    error_message = "The description cannot be empty or contain only whitespace characters when provided."
+  }
+
+  validation {
+    condition = alltrue([
+      for dataset in var.dataset_cosmosdb_mongoapi :
+      dataset.folder == null || length(trimspace(dataset.folder)) > 0
+    ])
+    error_message = "The folder cannot be empty or contain only whitespace characters when provided."
+  }
 }
 
 variable "diagnostic_settings" {
