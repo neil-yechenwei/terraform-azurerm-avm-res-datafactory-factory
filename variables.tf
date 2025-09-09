@@ -133,14 +133,14 @@ DESCRIPTION
   validation {
     condition = alltrue([
       for dataset in var.dataset_cosmosdb_mongoapi :
-      dataset.description == null || length(trimspace(dataset.description)) > 0
+      dataset.description == null ? true : length(trimspace(dataset.description)) > 0
     ])
     error_message = "The description cannot be empty or contain only whitespace characters when provided."
   }
   validation {
     condition = alltrue([
       for dataset in var.dataset_cosmosdb_mongoapi :
-      dataset.folder == null || length(trimspace(dataset.folder)) > 0
+      dataset.folder == null ? true : length(trimspace(dataset.folder)) > 0
     ])
     error_message = "The folder cannot be empty or contain only whitespace characters when provided."
   }
