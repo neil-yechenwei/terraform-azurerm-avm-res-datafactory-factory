@@ -6,6 +6,10 @@ terraform {
       source  = "hashicorp/azurerm"
       version = ">= 3.87"
     }
+    random = {
+      source  = "hashicorp/random"
+      version = ">= 3.5"
+    }
   }
 }
 
@@ -17,36 +21,42 @@ provider "azurerm" {
   }
 }
 
+resource "random_string" "suffix" {
+  length  = 4
+  numeric = false
+  special = false
+  upper   = false
+}
+
 # Naming Module for Consistent Resource Names
 module "naming" {
   source  = "Azure/naming/azurerm"
   version = "0.3.0"
 
-  prefix = ["test"]
-  suffix = ["01"]
+  suffix = [random_string.suffix.result]
 }
 
 # Create Resource Group
 resource "azurerm_resource_group" "rg" {
   location = "southeastasia"
-  name     = module.naming.resource_group.name
+  name     = "${module.naming.resource_group.name_unique}-rg"
 }
 
 # Create Resource Group
 resource "azurerm_resource_group" "host" {
   location = "southeastasia"
-  name     = module.naming.resource_group.name
+  name     = "${module.naming.resource_group.name_unique}-host"
 }
 
 resource "azurerm_data_factory" "host" {
   location            = azurerm_resource_group.host.location
-  name                = module.naming.data_factory.name
+  name                = module.naming.data_factory.name_unique
   resource_group_name = azurerm_resource_group.host.name
 }
 
 resource "azurerm_data_factory_integration_runtime_self_hosted" "host" {
   data_factory_id = azurerm_data_factory.host.id
-  name            = module.naming.data_factory_integration_runtime_managed.name
+  name            = module.naming.data_factory_integration_runtime_managed.name_unique
 }
 
 
@@ -56,8 +66,9 @@ module "df_with_integration_runtime_self_hosted" {
 
   location = azurerm_resource_group.rg.location
   # Required variables (adjust values accordingly)
-  name                = module.naming.data_factory.name
+  name                = "DataFactory-${module.naming.data_factory.name_unique}"
   resource_group_name = azurerm_resource_group.rg.name
+  enable_telemetry    = false
   integration_runtime_self_hosted = {
     example = {
       name        = module.naming.data_factory_integration_runtime_managed.name
